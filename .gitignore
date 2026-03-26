@@ -1,0 +1,18 @@
+# 忽略 Python 快取
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# 忽略向量資料庫資料 (部署時會由掛載磁碟提供，不跟隨程式碼)
+vector_db/
+
+# --- 關鍵：絕對不要上傳 .env ---
+.env
+# -----------------------------
+
+# 忽略作業系統暫存檔
+.DS_Store
+Thumbs.db

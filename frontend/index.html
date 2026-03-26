@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-TW"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>知識驗證 | The Digital Archivist</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline": "#76777d",
+              "primary-fixed-dim": "#adc6ff",
+              "on-error-container": "#93000a",
+              "primary-fixed": "#d8e2ff",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "background": "#faf8ff",
+              "outline-variant": "#c6c6cd",
+              "secondary-fixed": "#d8e3fb",
+              "surface-container-lowest": "#ffffff",
+              "tertiary-fixed-dim": "#d0bcff",
+              "on-primary-fixed-variant": "#004395",
+              "on-primary": "#ffffff",
+              "on-primary-container": "#3980f4",
+              "tertiary-fixed": "#e9ddff",
+              "inverse-surface": "#283044",
+              "inverse-primary": "#adc6ff",
+              "on-tertiary-fixed": "#23005c",
+              "surface-container-highest": "#dae2fd",
+              "primary-container": "#001a42",
+              "surface-tint": "#005ac2",
+              "on-tertiary-fixed-variant": "#5516be",
+              "on-secondary-container": "#586377",
+              "secondary-fixed-dim": "#bcc7de",
+              "surface-dim": "#d2d9f4",
+              "surface-bright": "#faf8ff",
+              "secondary-container": "#d5e0f8",
+              "tertiary": "#000000",
+              "error": "#ba1a1a",
+              "on-secondary-fixed-variant": "#3c475a",
+              "on-background": "#131b2e",
+              "primary": "#000000",
+              "on-surface": "#131b2e",
+              "error-container": "#ffdad6",
+              "surface-container-low": "#f2f3ff",
+              "surface-container": "#eaedff",
+              "tertiary-container": "#23005c",
+              "on-error": "#ffffff",
+              "surface": "#faf8ff",
+              "on-surface-variant": "#45464d",
+              "on-tertiary-container": "#9466ff",
+              "on-primary-fixed": "#001a42",
+              "secondary": "#545f73",
+              "surface-variant": "#dae2fd",
+              "on-secondary-fixed": "#111c2d",
+              "inverse-on-surface": "#eef0ff",
+              "surface-container-high": "#e2e7ff"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "3xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .signature-gradient {
+        background: linear-gradient(135deg, #3980f4 0%, #9466ff 100%);
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #faf8ff;
+        color: #131b2e;
+      }
+      h1, h2, h3 {
+        font-family: 'Manrope', sans-serif;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#faf8ff]/80 backdrop-blur-xl shadow-[0px_12px_32px_rgba(19,27,46,0.04)]">
+<div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button onclick="window.openMobileMenu()" class="p-2 -ml-2 mr-1 hover:bg-[#f2f3ff] rounded-lg transition-all text-[#3980f4] active:scale-95"><span class="material-symbols-outlined">menu</span></button>
+<span class="material-symbols-outlined text-[#3980f4]" data-icon="verified_user">verified_user</span>
+<span class="text-xl font-extrabold bg-gradient-to-br from-[#3980f4] to-[#9466ff] bg-clip-text text-transparent font-['Manrope'] tracking-tight">知識驗證</span>
+<span class="hidden md:flex items-center gap-1 ml-4 text-sm font-bold text-[#3980f4]">
+<span class="material-symbols-outlined text-[18px] text-[#3980f4]">home</span>
+<span>系統首頁</span>
+</span>
+</div>
+<button id="login-btn" onclick="handleLogin()" class="text-sm font-bold text-[#3980f4] hover:opacity-100 hover:scale-105 transition-all duration-300 active:scale-95">Sign In</button>
+</div>
+</header>
+<main class="flex-grow pt-32 pb-24 px-6 flex flex-col items-center">
+<!-- Hero Section -->
+<section class="w-full max-w-md text-center mb-12">
+<h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-on-surface">
+                知識驗證
+            </h1>
+<p class="text-on-surface-variant text-lg font-medium leading-relaxed opacity-80">
+                The Digital Archivist. <br/>
+                精確驗證全球資訊，確保知識的真實性。
+            </p>
+</section>
+<!-- Search / Input Section -->
+<section class="w-full max-w-md mb-16">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-[#3980f4] to-[#9466ff] rounded-3xl blur opacity-20 group-focus-within:opacity-40 transition duration-500"></div>
+<div class="relative bg-surface-container-lowest rounded-2xl p-2 flex flex-col gap-3 shadow-[0px_12px_32px_rgba(19,27,46,0.06)]">
+<div class="flex items-center px-4 py-3 bg-surface-container-low rounded-xl">
+<span class="material-symbols-outlined text-outline mr-3" data-icon="link">link</span>
+<input id="url-input" class="bg-transparent border-none focus:ring-0 w-full text-on-surface placeholder:text-outline/60 font-medium" placeholder="輸入要驗證的 URL 或知識文本..." type="url"/>
+</div>
+<button id="submit-btn" onclick="submitUrl()" class="signature-gradient text-white font-bold py-4 rounded-xl text-lg flex items-center justify-center gap-2 hover:opacity-90 transition-all duration-300 active:scale-[0.98]">
+<span id="submit-text">送出</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="mt-4 flex justify-center gap-4">
+<span class="text-xs font-bold uppercase tracking-widest text-[#3980f4]/60">Trusted by researchers worldwide</span>
+</div>
+</section>
+<!-- Navigation Blocks -->
+<section class="w-full max-w-md grid grid-cols-1 gap-4">
+  <!-- 知識教學卡片 -->
+  <a href="teaching.html" class="group flex items-center gap-5 bg-surface-container-lowest p-6 rounded-2xl shadow-[0px_8px_24px_rgba(19,27,46,0.06)] border border-[#c6c6cd]/15 hover:shadow-[0px_12px_32px_rgba(57,128,244,0.15)] hover:border-[#9466ff]/30 hover:translate-y-[-2px] transition-all duration-300 active:scale-[0.98]">
+    <div class="h-14 w-14 rounded-2xl bg-[#f2eeff] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-[#9466ff] text-2xl" style="font-variation-settings:'FILL' 1;">import_contacts</span>
+    </div>
+    <div class="flex-1">
+      <div class="text-base font-bold text-on-surface font-headline">知識教學卡片</div>
+      <div class="text-sm text-on-surface-variant mt-0.5">查看 AI 萃取的核心知識</div>
+    </div>
+    <span class="material-symbols-outlined text-[#9466ff]/50 group-hover:text-[#9466ff] group-hover:translate-x-1 transition-all duration-300">arrow_forward_ios</span>
+  </a>
+
+  <!-- AI 深度測驗 -->
+  <a href="quiz.html" class="group flex items-center gap-5 bg-surface-container-lowest p-6 rounded-2xl shadow-[0px_8px_24px_rgba(19,27,46,0.06)] border border-[#c6c6cd]/15 hover:shadow-[0px_12px_32px_rgba(244,57,163,0.15)] hover:border-[#f439a3]/30 hover:translate-y-[-2px] transition-all duration-300 active:scale-[0.98]">
+    <div class="h-14 w-14 rounded-2xl bg-[#fff0f8] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-[#f439a3] text-2xl" style="font-variation-settings:'FILL' 1;">quiz</span>
+    </div>
+    <div class="flex-1">
+      <div class="text-base font-bold text-on-surface font-headline">AI 深度測驗</div>
+      <div class="text-sm text-on-surface-variant mt-0.5">挑戰 AI 生成的單選測驗</div>
+    </div>
+    <span class="material-symbols-outlined text-[#f439a3]/50 group-hover:text-[#f439a3] group-hover:translate-x-1 transition-all duration-300">arrow_forward_ios</span>
+  </a>
+
+  <!-- 歷史紀錄統計 -->
+  <a href="history.html" class="group flex items-center gap-5 bg-surface-container-lowest p-6 rounded-2xl shadow-[0px_8px_24px_rgba(19,27,46,0.06)] border border-[#c6c6cd]/15 hover:shadow-[0px_12px_32px_rgba(19,27,46,0.12)] hover:border-[#131b2e]/20 hover:translate-y-[-2px] transition-all duration-300 active:scale-[0.98]">
+    <div class="h-14 w-14 rounded-2xl bg-[#f0f0f0] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300">
+      <span class="material-symbols-outlined text-[#131b2e] text-2xl" style="font-variation-settings:'FILL' 1;">insert_chart</span>
+    </div>
+    <div class="flex-1">
+      <div class="text-base font-bold text-on-surface font-headline">歷史紀錄統計</div>
+      <div class="text-sm text-on-surface-variant mt-0.5">回顧過往的學習與測驗成果</div>
+    </div>
+    <span class="material-symbols-outlined text-[#131b2e]/40 group-hover:text-[#131b2e] group-hover:translate-x-1 transition-all duration-300">arrow_forward_ios</span>
+  </a>
+</section>
+</main>
+<!-- NavigationDrawer (Simulated as Mobile Bottom Bar for App-like feel) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-[#faf8ff] dark:bg-[#131b2e] h-20 px-6 flex items-center justify-between z-50 shadow-[0px_-8px_24px_rgba(19,27,46,0.04)]">
+<div class="flex flex-col items-center gap-1 group">
+<div class="bg-gradient-to-r from-[#3980f4] to-[#9466ff] text-white rounded-xl p-2 transition-colors duration-200">
+<span class="material-symbols-outlined block" data-icon="search">search</span>
+</div>
+<span class="text-[10px] font-bold text-[#3980f4]">Verify</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-40">
+<span class="material-symbols-outlined text-[#131b2e] dark:text-[#faf8ff]" data-icon="history">history</span>
+<span class="text-[10px] font-medium font-['Inter']">Archives</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-40">
+<span class="material-symbols-outlined text-[#131b2e] dark:text-[#faf8ff]" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-[10px] font-medium font-['Inter']">Methodology</span>
+</div>
+<div class="flex flex-col items-center gap-1 opacity-40">
+<span class="material-symbols-outlined text-[#131b2e] dark:text-[#faf8ff]" data-icon="help_outline">help_outline</span>
+<span class="text-[10px] font-medium font-['Inter']">Support</span>
+</div>
+</nav>
+<!-- Footer -->
+<footer class="bg-[#f2f3ff] dark:bg-[#0f172a] w-full py-12 border-t border-[#c6c6cd]/15 mb-20 md:mb-0">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto px-8">
+<div class="space-y-4">
+<div class="font-['Manrope'] font-black text-[#131b2e] text-lg uppercase tracking-wider">知識驗證</div>
+<p class="text-[#131b2e]/60 dark:text-[#faf8ff]/60 text-xs font-medium leading-relaxed max-w-xs">
+                    © 2024 Knowledge Verification. The Digital Archivist. <br/>
+                    Empowering the era of truth through algorithmic integrity.
+                </p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<a class="text-[#131b2e]/60 dark:text-[#faf8ff]/60 text-xs uppercase tracking-widest font-['Inter'] hover:text-[#3980f4] transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#131b2e]/60 dark:text-[#faf8ff]/60 text-xs uppercase tracking-widest font-['Inter'] hover:text-[#3980f4] transition-colors" href="#">Terms of Service</a>
+<a class="text-[#131b2e]/60 dark:text-[#faf8ff]/60 text-xs uppercase tracking-widest font-['Inter'] hover:text-[#3980f4] transition-colors" href="#">API Documentation</a>
+<a class="text-[#131b2e]/60 dark:text-[#faf8ff]/60 text-xs uppercase tracking-widest font-['Inter'] hover:text-[#3980f4] transition-colors" href="#">Contact</a>
+</div>
+</div>
+</footer>
+<script>
+  function handleLogin() {
+    const existing = localStorage.getItem('userEmail');
+    if (existing) {
+      if(confirm(`目前登入為：${existing}\n要登出嗎？`)) {
+        localStorage.removeItem('userEmail');
+        document.getElementById('login-btn').innerText = 'Sign In';
+      }
+    } else {
+      const email = prompt('請輸入您的 Gmail 以記錄學習歷程：');
+      const gmailRegex = /^[a-zA-Z0-9._%+\-]+@gmail\.com$/i;
+      if (email && gmailRegex.test(email)) {
+        localStorage.setItem('userEmail', email);
+        document.getElementById('login-btn').innerText = email.split('@')[0];
+        alert('登入成功！接下來的學習與測驗將綁定於此信箱。');
+      } else if (email) {
+        alert('格式不正確！請輸入有效的 Gmail 地址（例如：yourname@gmail.com）');
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 檢查登入狀態
+    const email = localStorage.getItem('userEmail');
+    if(email) {
+      document.getElementById('login-btn').innerText = email.split('@')[0];
+    }
+  });
+
+  async function submitUrl() {
+    const url = document.getElementById('url-input').value;
+    const btn = document.getElementById('submit-btn');
+    const text = document.getElementById('submit-text');
+    if (!url) {
+      alert('請先輸入網址！');
+      return;
+    }
+    text.innerText = '處理中...';
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/process_url', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({url})
+      });
+      const data = await res.json();
+      if (res.ok && data.status === 'success') {
+        alert(data.message);
+        sessionStorage.setItem('hasSubmittedUrl', 'true');
+        // 成功後跳轉到教學分頁
+        window.location.href = 'teaching.html?v=' + new Date().getTime();
+      } else {
+        alert('發生錯誤: ' + (data.detail || data.message));
+      }
+    } catch (err) {
+      alert('發生錯誤: ' + err);
+    } finally {
+      text.innerText = '送出';
+      btn.disabled = false;
+    }
+  }
+</script>
+
+    <!-- Mobile Navigation Backdrop -->
+    <div id="mobile-menu-backdrop" onclick="window.closeMobileMenu()" class="fixed inset-0 bg-black/50 z-[55] hidden opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Mobile Navigation Sidebar -->
+    <aside id="mobile-menu" class="fixed top-0 left-0 h-full w-72 bg-[#faf8ff] z-[60] transform -translate-x-full transition-transform duration-300 shadow-[24px_0_48px_rgba(19,27,46,0.1)] flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-[#3980f4]/10">
+            <span class="text-xl font-black bg-gradient-to-br from-[#3980f4] to-[#9466ff] bg-clip-text text-transparent">導覽選單</span>
+            <button onclick="window.closeMobileMenu()" class="p-2 hover:bg-[#f2f3ff] rounded-full transition-colors text-[#131b2e]">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4 flex flex-col gap-2 px-4">
+            <a href="/" class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-[#3980f4]">home</span>
+                系統首頁
+            </a>
+            <a href="teaching.html" class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-[#9466ff]">import_contacts</span>
+                知識教學卡片
+            </a>
+            <a href="quiz.html" class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-[#f439a3]">quiz</span>
+                AI 深度測驗
+            </a>
+            <a href="history.html" class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-tertiary">insert_chart</span>
+                歷史紀錄統計
+            </a>
+        </div>
+        <div class="p-6 border-t border-[#3980f4]/10 text-xs text-[#131b2e]/60 text-center font-bold">
+            The Digital Archivist © 2024
+        </div>
+    </aside>
+
+    <script>
+        window.openMobileMenu = function() {
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            const menu = document.getElementById('mobile-menu');
+            backdrop.classList.remove('hidden');
+            void backdrop.offsetWidth; 
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+            menu.classList.remove('-translate-x-full');
+            menu.classList.add('translate-x-0');
+        }
+        window.closeMobileMenu = function() {
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            const menu = document.getElementById('mobile-menu');
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            menu.classList.remove('translate-x-0');
+            menu.classList.add('-translate-x-full');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+        }
+    </script>
+<script>
+  // 強制攔截全站跳轉，自動加上隨機版本號以阻擋頑固快取
+  document.addEventListener('DOMContentLoaded', () => {
+      const cacheBuster = "?v=" + new Date().getTime();
+      document.querySelectorAll('a').forEach(a => {
+          let href = a.getAttribute('href');
+          if (href && !href.startsWith('http') && !href.startsWith('#') && !href.includes('?v=')) {
+              a.setAttribute('href', href.split('?')[0] + cacheBuster);
+          }
+      });
+      // 攔截教學頁面等有寫死的 window.location 跳轉
+      const originalAssign = window.location.assign;
+  });
+</script>
+</body></html>

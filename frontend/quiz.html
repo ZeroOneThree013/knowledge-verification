@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-TW">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>知識測驗 - The Digital Archivist</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed": "#d8e3fb",
+            "on-tertiary-fixed": "#23005c",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "background": "#faf8ff",
+            "on-secondary-fixed-variant": "#3c475a",
+            "on-tertiary": "#ffffff",
+            "secondary": "#545f73",
+            "secondary-fixed-dim": "#bcc7de",
+            "on-secondary-fixed": "#111c2d",
+            "surface-container-highest": "#dae2fd",
+            "on-secondary-container": "#586377",
+            "primary-fixed-dim": "#adc6ff",
+            "outline": "#76777d",
+            "inverse-on-surface": "#eef0ff",
+            "surface-variant": "#dae2fd",
+            "secondary-container": "#d5e0f8",
+            "on-tertiary-fixed-variant": "#5516be",
+            "on-error-container": "#93000a",
+            "tertiary": "#000000",
+            "tertiary-container": "#23005c",
+            "primary-fixed": "#d8e2ff",
+            "surface": "#faf8ff",
+            "on-primary-fixed": "#001a42",
+            "on-surface": "#131b2e",
+            "surface-bright": "#faf8ff",
+            "on-tertiary-container": "#9466ff",
+            "surface-container": "#eaedff",
+            "primary-container": "#001a42",
+            "on-primary-fixed-variant": "#004395",
+            "surface-tint": "#005ac2",
+            "on-primary": "#ffffff",
+            "error": "#ba1a1a",
+            "inverse-primary": "#adc6ff",
+            "surface-container-low": "#f2f3ff",
+            "surface-dim": "#d2d9f4",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#45464d",
+            "on-primary-container": "#3980f4",
+            "inverse-surface": "#283044",
+            "tertiary-fixed-dim": "#d0bcff",
+            "tertiary-fixed": "#e9ddff",
+            "primary": "#000000",
+            "outline-variant": "#c6c6cd",
+            "on-background": "#131b2e",
+            "surface-container-high": "#e2e7ff"
+          },
+          fontFamily: {
+            "headline": ["Manrope"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+          },
+          borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+        },
+      },
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    .signature-gradient {
+      background: linear-gradient(135deg, #3980f4 0%, #9466ff 100%);
+    }
+
+    .ghost-border {
+      outline: 1px solid rgba(198, 198, 205, 0.15);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #faf8ff;
+    }
+
+    h1,
+    h2,
+    h3,
+    .font-headline {
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="text-on-surface antialiased">
+  <!-- TopAppBar -->
+  <header
+    class="bg-[#faf8ff] dark:bg-[#131b2e] docked full-width top-0 sticky z-50 shadow-[0px_12px_32px_rgba(19,27,46,0.04)]">
+    <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+      <div class="flex items-center gap-3">
+        <button onclick="window.openMobileMenu()"
+          class="p-2 -ml-2 mr-1 hover:bg-[#f2f3ff] dark:hover:bg-[#1c2642] rounded-lg transition-all duration-300 ease-in-out transform active:scale-95 text-[#3980f4] dark:text-[#9466ff]">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <span class="material-symbols-outlined text-[#3980f4]" data-icon="verified_user">verified_user</span>
+        <span
+          class="text-xl font-extrabold bg-gradient-to-br from-[#3980f4] to-[#9466ff] bg-clip-text text-transparent font-['Manrope'] tracking-tight">知識驗證</span>
+        <span class="hidden md:flex items-center gap-1 ml-4 text-sm font-bold text-[#f439a3]">
+          <span class="material-symbols-outlined text-[18px] text-[#f439a3]">quiz</span>
+          <span>AI 深度測驗</span>
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button id="login-btn" onclick="handleLogout()"
+          class="text-sm font-bold text-[#3980f4] hover:opacity-100 hover:scale-105 transition-all duration-300 active:scale-95 hidden md:block"></button>
+        <button onclick="window.location.href='/?v=' + new Date().getTime()"
+          class="text-sm font-bold text-[#3980f4] hover:opacity-100 hover:scale-105 transition-all duration-300 active:scale-95 flex items-center gap-1">
+          <span class="font-label">返回首頁</span>
+          <span class="material-symbols-outlined text-[18px]" data-icon="home">home</span>
+        </button>
+      </div>
+    </div>
+    <div class="bg-[#f2f3ff] dark:bg-[#1c2642] h-[1px] w-full"></div>
+  </header>
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Progress Header -->
+    <section class="mb-16">
+      <div class="flex justify-between items-end mb-4">
+        <div>
+          <span class="text-on-primary-container font-headline font-bold tracking-tight text-sm uppercase">Current
+            Session</span>
+          <h1 class="text-4xl font-extrabold font-headline tracking-tighter text-on-surface mt-1">AI 技術深度評測</h1>
+        </div>
+        <div class="text-right">
+          <span id="progress-text" class="text-3xl font-black font-headline text-on-tertiary-container">0%</span>
+          <p class="text-sm text-on-surface-variant font-medium">等候參數設定...</p>
+        </div>
+      </div>
+      <div class="w-full h-3 bg-surface-container-high rounded-full overflow-hidden">
+        <div id="progress-bar" class="h-full signature-gradient rounded-full w-[0%] transition-all duration-500"></div>
+      </div>
+    </section>
+    <!-- Quiz Content will be injected here -->
+    <div id="quiz-container" class="space-y-12">
+    </div>
+    <!-- Submit CTA -->
+    <div class="mt-16 flex flex-col items-center">
+      <p class="text-sm text-on-surface-variant mb-6 font-medium">在提交之前，請確保您已檢查過所有答案。</p>
+      <button id="submit-btn" style="display: none;"
+        class="signature-gradient text-white px-12 py-5 rounded-full font-headline font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 items-center justify-center gap-3">
+        提交解答
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </div>
+  </main>
+  <!-- Footer -->
+  <footer class="w-full py-12 bg-[#faf8ff] dark:bg-[#131b2e] border-t border-[#c6c6cd]/15">
+    <div class="flex flex-col md:flex-row justify-between items-center px-8 max-w-7xl mx-auto gap-4">
+      <div class="flex flex-col items-center md:items-start">
+        <span class="font-['Manrope'] font-extrabold text-[#131b2e] dark:text-[#faf8ff] text-lg mb-1">The Digital
+          Archivist</span>
+        <p class="font-['Inter'] text-sm text-[#131b2e]/60 dark:text-[#faf8ff]/60">© 2024 The Digital Archivist. All
+          rights reserved.</p>
+      </div>
+      <div class="flex gap-8">
+        <a class="font-['Inter'] text-sm text-[#131b2e]/60 dark:text-[#faf8ff]/60 hover:text-[#3980f4] transition-colors"
+          href="#">隱私權政策</a>
+        <a class="font-['Inter'] text-sm text-[#131b2e]/60 dark:text-[#faf8ff]/60 hover:text-[#3980f4] transition-colors"
+          href="#">使用條款</a>
+        <a class="font-['Inter'] text-sm text-[#131b2e]/60 dark:text-[#faf8ff]/60 hover:text-[#3980f4] transition-colors"
+          href="#">聯繫支援</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    let quizData = [];
+    async function loadQuiz(num = 5) {
+      const container = document.getElementById('quiz-container');
+      if (sessionStorage.getItem('hasSubmittedUrl') !== 'true') {
+        showErrorState(container, '您尚未輸入學習網址，請先提供網頁連結交由 AI 分析。');
+        return;
+      }
+      container.innerHTML = '<div class="col-span-full text-center py-20 text-on-surface-variant animate-pulse font-medium">✨ 正在使用 LLM 動態生成專屬單選測驗中... 這可能需要幾十秒，請耐心等候。</div>';
+
+      try {
+        const res = await fetch(`/api/quiz?num=${num}`);
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          quizData = JSON.parse(data.data);
+          renderQuiz();
+        } else {
+          showErrorState(container, data.detail || data.message);
+        }
+      } catch (err) {
+        showErrorState(container, err.message || err);
+      }
+    }
+
+    function showErrorState(container, msg) {
+      console.error("API 載入錯誤:", msg);
+      container.innerHTML = `
+        <div class="col-span-full p-12 bg-white rounded-3xl shadow-xl shadow-error/5 border border-[#f439a3]/10 text-center flex flex-col items-center">
+            <span class="material-symbols-outlined text-[#f439a3] mb-4" style="font-size: 48px;">quiz</span>
+            <h3 class="text-2xl font-bold text-on-surface mb-2 font-headline">無法為您生成深度測驗</h3>
+            <p class="text-on-surface-variant mb-6 max-w-lg leading-relaxed">系統必須先了解文章內容，才能產生測驗題。這有時也代表短時間內 AI 資源已耗盡。</p>
+            <div class="w-full max-w-lg bg-surface-container-low p-2 rounded-2xl flex relative border-2 border-transparent focus-within:border-[#f439a3] transition-all">
+                <div class="pl-4 flex items-center justify-center text-on-surface-variant shrink-0">
+                    <span class="material-symbols-outlined text-xl">link</span>
+                </div>
+                <input id="error-url-input" type="url" placeholder="請貼上文章來源網址提交給系統..." class="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 px-4 py-3 text-on-surface placeholder:text-on-surface-variant font-medium rounded-r-xl">
+                <button onclick="window.retryUrl(event)" class="absolute right-2 top-2 bottom-2 bg-[#f439a3] text-white px-6 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all hidden md:block">分析網址</button>
+            </div>
+            <button onclick="window.retryUrl(event)" class="w-full max-w-lg mt-4 bg-[#f439a3] text-white px-6 py-4 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all md:hidden">分析網址</button>
+        </div>
+      `;
+      const subBtn = document.getElementById('submit-btn');
+      if (subBtn) subBtn.style.display = 'none';
+
+      const progressCount = document.querySelector('p.text-sm.text-on-surface-variant.font-medium');
+      if (progressCount) progressCount.innerText = '尚無測驗內容';
+    }
+
+    window.retryUrl = async function (event) {
+      const url = document.getElementById('error-url-input').value;
+      if (!url) return alert('請先貼上網址！');
+
+      const btn = event.target || event.srcElement;
+      const oldText = btn.innerText;
+      btn.innerText = '解構文章中...';
+
+      try {
+        const res = await fetch('/api/process_url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          sessionStorage.setItem('hasSubmittedUrl', 'true');
+          window.location.reload();
+        } else {
+          alert('準備失敗: ' + (data.detail || data.message));
+          btn.innerText = oldText;
+        }
+      } catch (e) {
+        alert('發生錯誤: ' + e);
+        btn.innerText = oldText;
+      }
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+      quizData.forEach((item, index) => {
+        let contentHtml = '';
+        if (item.type === 'radio') {
+          let optionsHtml = '';
+          item.options.forEach((opt, oIdx) => {
+            optionsHtml += `
+            <label class="relative flex items-center p-4 bg-surface-container-low rounded-xl cursor-pointer hover:bg-surface-container-high transition-all group">
+              <input class="w-5 h-5 text-[#3980f4] border-outline-variant focus:ring-[#3980f4]" name="q${index}" value="${opt}" type="radio"/>
+              <span class="ml-3 font-medium text-on-surface-variant group-hover:text-on-surface">${opt}</span>
+            </label>
+          `;
+          });
+          contentHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">${optionsHtml}</div>`;
+        } else {
+          contentHtml = `
+            <textarea id="q${index}-ans" class="w-full bg-surface-container-low border-0 rounded-xl p-6 text-on-surface placeholder:text-outline focus:ring-2 focus:ring-[#3980f4] transition-all" placeholder="在此輸入您的解答..." rows="4"></textarea>
+        `;
+        }
+
+        const numStr = (index + 1).toString().padStart(2, '0');
+        container.innerHTML += `
+        <section class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(19,27,46,0.06)] ghost-border">
+          <div class="flex gap-6">
+              <div class="shrink-0 w-12 h-12 rounded-xl signature-gradient flex items-center justify-center text-white font-headline font-bold text-xl">${numStr}</div>
+              <div class="flex-1 w-full overflow-hidden">
+                  <h2 class="text-xl font-bold font-headline mb-6 leading-tight text-on-surface">${item.question}</h2>
+                  ${contentHtml}
+                  <div id="q${index}-feedback" class="mt-4 hidden p-4 rounded-xl text-sm font-medium"></div>
+              </div>
+          </div>
+        </section>
+      `;
+      });
+
+      // update status count
+      const countEl = document.querySelector('p.text-sm.text-on-surface-variant.font-medium');
+      if (countEl) countEl.innerText = `準備開始作答 - 共 ${quizData.length} 題`;
+
+      // 綁定作答進度更新
+      const inputs = container.querySelectorAll('input[type="radio"], textarea');
+      inputs.forEach(input => {
+        input.addEventListener('change', updateProgress);
+        input.addEventListener('input', updateProgress);
+      });
+
+      const subBtn = document.getElementById('submit-btn');
+      if (subBtn) subBtn.style.display = 'flex';
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      let answered = 0;
+      quizData.forEach((_, index) => {
+        const radioChecked = document.querySelector(`input[name="q${index}"]:checked`);
+        const textVal = document.getElementById(`q${index}-ans`);
+        if (radioChecked || (textVal && textVal.value.trim() !== '')) {
+          answered++;
+        }
+      });
+      const percent = Math.round((answered / quizData.length) * 100) || 0;
+      const progressText = document.getElementById('progress-text');
+      const progressBar = document.getElementById('progress-bar');
+
+      if (progressText) progressText.innerText = `${percent}%`;
+      if (progressBar) progressBar.style.width = `${percent}%`;
+
+      const countEl = document.querySelector('p.text-sm.text-on-surface-variant.font-medium');
+      if (countEl) countEl.innerText = `已作答 ${answered} / ${quizData.length} 題`;
+    }
+
+    function submitQuiz() {
+      let score = 0;
+      quizData.forEach((item, index) => {
+        const feedback = document.getElementById(`q${index}-feedback`);
+        feedback.classList.remove('hidden');
+        if (item.type === 'radio') {
+          const checked = document.querySelector(`input[name="q${index}"]:checked`);
+          if (checked && checked.value === item.answer) {
+            score++;
+            feedback.innerHTML = `✅ 正確！`;
+            feedback.className = "mt-4 p-4 rounded-xl text-sm font-medium bg-[#d8e2ff] text-[#001a42]";
+          } else {
+            feedback.innerHTML = `❌ 不正確。正確答案為：${item.answer}`;
+            feedback.className = "mt-4 p-4 rounded-xl text-sm font-medium bg-[#ffdad6] text-[#93000a]";
+          }
+        } else {
+          feedback.innerHTML = `👉 參考解答：${item.answer}`;
+          feedback.className = "mt-4 p-4 rounded-xl text-sm font-medium bg-surface-container-high text-on-surface";
+        }
+      });
+      alert('解答已送出，請查看各題回饋。');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 儲存至 localStorage 歷史紀錄（含題目詳細資料）
+      const history = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+      const questions = quizData.map((item, i) => {
+        const selectedEl = document.querySelector(`input[name="q${i}"]:checked`);
+        return {
+          question: item.question,
+          options: item.options,
+          answer: item.answer,
+          userAnswer: selectedEl ? selectedEl.value : '（未作答）'
+        };
+      });
+      history.push({
+        date: new Date().toLocaleString('zh-TW'),
+        score: score,
+        total: quizData.length,
+        questions: questions
+      });
+      localStorage.setItem('quizHistory', JSON.stringify(history));
+
+      // 提交後：插入「重新出題」按鈕，並將原按鈕改為次要「回首頁」
+      const btn = document.getElementById('submit-btn');
+      if (btn) {
+        // 改為「回首頁」(次要樣式)
+        btn.innerHTML = `回首頁 <span class="material-symbols-outlined">home</span>`;
+        btn.className = "mt-4 bg-surface-container-high text-on-surface px-12 py-5 rounded-full font-headline font-bold text-lg shadow hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3";
+        btn.onclick = () => window.location.href = '/?v=' + new Date().getTime();
+
+        // 在「回首頁」按鈕之前插入「重新出題」主要按鈕（若尚未存在）
+        if (!document.getElementById('retry-quiz-btn')) {
+          const retryBtn = document.createElement('button');
+          retryBtn.id = 'retry-quiz-btn';
+          retryBtn.className = "signature-gradient text-white px-12 py-5 rounded-full font-headline font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3";
+          retryBtn.innerHTML = `重新出題 <span class="material-symbols-outlined">refresh</span>`;
+          retryBtn.onclick = () => {
+            // 移除重新出題與匯出按鈕（清理後再重置）
+            const toRemove = ['retry-quiz-btn', 'export-btn'];
+            toRemove.forEach(id => { const el = document.getElementById(id); if (el) el.remove(); });
+
+            // 重置進度條
+            const progressText = document.getElementById('progress-text');
+            const progressBar = document.getElementById('progress-bar');
+            if (progressText) progressText.innerText = '0%';
+            if (progressBar) progressBar.style.width = '0%';
+            const countEl = document.querySelector('p.text-sm.text-on-surface-variant.font-medium');
+            if (countEl) countEl.innerText = '等候參數設定...';
+
+            // 恢復「提交解答」按鈕原始狀態
+            btn.innerHTML = `提交解答 <span class="material-symbols-outlined">send</span>`;
+            btn.className = "signature-gradient text-white px-12 py-5 rounded-full font-headline font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 items-center justify-center gap-3";
+            btn.onclick = submitQuiz;
+            btn.style.display = 'none';
+
+            // 重置 quizData
+            quizData = [];
+
+            // 重新顯示設定選單
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = `
+            <section class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(19,27,46,0.06)] ghost-border flex flex-col items-center">
+                <span class="material-symbols-outlined text-6xl text-[#3980f4] mb-6">tune</span>
+                <h2 class="text-2xl font-bold font-headline mb-4 text-on-surface">測驗生成設定</h2>
+                <p class="text-on-surface-variant mb-8 font-medium">請決定您希望 AI 為您準備挑戰幾道單選題：</p>
+                <div class="flex gap-4 mb-8 w-full max-w-sm">
+                    <label class="flex-1 text-center py-3 bg-surface-container-low border-2 border-transparent focus-within:border-[#3980f4] rounded-xl cursor-pointer hover:bg-surface-container-high transition-all">
+                        <input type="radio" name="q_count" value="3" class="hidden">
+                        <span class="font-bold text-on-surface lg-text-lg">3 題</span>
+                    </label>
+                    <label class="flex-1 text-center py-3 bg-[#eef0ff] border-2 border-[#3980f4] rounded-xl cursor-pointer transition-all shadow-sm">
+                        <input type="radio" name="q_count" value="5" class="hidden" checked>
+                        <span class="font-bold text-[#3980f4] lg-text-lg">5 題</span>
+                    </label>
+                    <label class="flex-1 text-center py-3 bg-surface-container-low border-2 border-transparent focus-within:border-[#3980f4] rounded-xl cursor-pointer hover:bg-surface-container-high transition-all">
+                        <input type="radio" name="q_count" value="10" class="hidden">
+                        <span class="font-bold text-on-surface lg-text-lg">10 題</span>
+                    </label>
+                </div>
+                <button onclick="window.startQuizGeneration()" class="signature-gradient text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl active:scale-95 transition-all w-full max-w-sm flex items-center justify-center gap-2">
+                    開始生成 <span class="material-symbols-outlined">magic_button</span>
+                </button>
+            </section>
+          `;
+
+            // 重新綁定選題樣式切換
+            const labels = container.querySelectorAll('label');
+            labels.forEach(label => {
+              const input = label.querySelector('input');
+              input.addEventListener('change', () => {
+                labels.forEach(l => {
+                  l.className = "flex-1 text-center py-3 bg-surface-container-low border-2 border-transparent focus-within:border-[#3980f4] rounded-xl cursor-pointer hover:bg-surface-container-high transition-all";
+                  l.querySelector('span').className = "font-bold text-on-surface lg-text-lg";
+                });
+                label.className = "flex-1 text-center py-3 bg-[#eef0ff] border-2 border-[#3980f4] rounded-xl cursor-pointer transition-all shadow-sm";
+                label.querySelector('span').className = "font-bold text-[#3980f4] lg-text-lg";
+              });
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          };
+          btn.parentNode.insertBefore(retryBtn, btn);
+        }
+
+        // 檢查登入狀態，顯示匯出紀錄按鈕
+        const email = localStorage.getItem('userEmail');
+        if (email && !document.getElementById('export-btn')) {
+          const exportBtn = document.createElement('button');
+          exportBtn.id = 'export-btn';
+          exportBtn.className = "mt-4 bg-[#e9ddff] text-[#23005c] px-12 py-5 rounded-full font-headline font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center gap-3";
+          exportBtn.innerHTML = `匯出成 MD 寄至信箱 <span class="material-symbols-outlined">mail</span>`;
+          exportBtn.onclick = () => exportRecord(score, quizData.length);
+          btn.parentNode.appendChild(exportBtn);
+        }
+      }
+    }
+
+    async function exportRecord(score, total) {
+      const email = localStorage.getItem('userEmail');
+      const exportBtn = document.getElementById('export-btn');
+      exportBtn.innerText = '生成並匯出中...';
+      try {
+        const res = await fetch('/api/export_record', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, quiz_data: quizData, score, total })
+        });
+        const data = await res.json();
+        if (res.ok && data.status === 'success') {
+          alert(data.message);
+          if (data.markdown) {
+            const blob = new Blob([data.markdown], { type: 'text/markdown' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `learning_record.md`;
+            a.click();
+          }
+        } else {
+          alert('匯出失敗: ' + (data.detail || data.message));
+        }
+      } catch (err) {
+        alert('發生錯誤: ' + err);
+      } finally {
+        exportBtn.innerHTML = `已嘗試匯出 <span class="material-symbols-outlined">check</span>`;
+      }
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', () => {
+      function setLoginBtn(email) {
+        const btn = document.getElementById('login-btn');
+        if (!btn) return;
+        if (email) {
+          btn.innerText = email.split('@')[0];
+          btn.onclick = window.handleLogout;
+          btn.classList.remove('hidden');
+        } else {
+          btn.innerText = 'Sign In';
+          btn.onclick = window.handleLogin;
+          btn.classList.remove('hidden');
+        }
+      }
+
+      window.handleLogin = function () {
+        const gmailRegex = /^[a-zA-Z0-9._%+\-]+@gmail\.com$/i;
+        const email = prompt('請輸入您的 Gmail 以記錄學習歷程：');
+        if (email && gmailRegex.test(email)) {
+          localStorage.setItem('userEmail', email);
+          setLoginBtn(email);
+          alert('登入成功！接下來的學習與測驗將綁定於此信箱。');
+        } else if (email) {
+          alert('格式不正確！請輸入有效的 Gmail 地址（例如：yourname@gmail.com）');
+        }
+      };
+
+      window.handleLogout = function () {
+        const existing = localStorage.getItem('userEmail');
+        if (existing) {
+          if (confirm(`目前登入為：${existing}\n要登出嗎？`)) {
+            localStorage.removeItem('userEmail');
+            setLoginBtn(null);
+          }
+        }
+      };
+
+      setLoginBtn(localStorage.getItem('userEmail'));
+
+      const subBtn = document.getElementById('submit-btn');
+      if (subBtn) {
+        subBtn.onclick = submitQuiz;
+      }
+
+      const container = document.getElementById('quiz-container');
+      if (sessionStorage.getItem('hasSubmittedUrl') !== 'true') {
+        showErrorState(container, '您尚未輸入學習網址，請先提供網頁連結交由 AI 分析。');
+        return;
+      }
+
+      // Initialize configuration screen instead of autostarting loadQuiz
+      container.innerHTML = `
+      <section class="bg-surface-container-lowest p-8 rounded-xl shadow-[0px_12px_32px_rgba(19,27,46,0.06)] ghost-border flex flex-col items-center">
+          <span class="material-symbols-outlined text-6xl text-[#3980f4] mb-6">tune</span>
+          <h2 class="text-2xl font-bold font-headline mb-4 text-on-surface">測驗生成設定</h2>
+          <p class="text-on-surface-variant mb-8 font-medium">請決定您希望 AI 為您準備挑戰幾道單選題：</p>
+          <div class="flex gap-4 mb-8 w-full max-w-sm">
+              <label class="flex-1 text-center py-3 bg-surface-container-low border-2 border-transparent focus-within:border-[#3980f4] rounded-xl cursor-pointer hover:bg-surface-container-high transition-all">
+                  <input type="radio" name="q_count" value="3" class="hidden">
+                  <span class="font-bold text-on-surface lg-text-lg">3 題</span>
+              </label>
+              <label class="flex-1 text-center py-3 bg-[#eef0ff] border-2 border-[#3980f4] rounded-xl cursor-pointer transition-all shadow-sm">
+                  <input type="radio" name="q_count" value="5" class="hidden" checked>
+                  <span class="font-bold text-[#3980f4] lg-text-lg">5 題</span>
+              </label>
+              <label class="flex-1 text-center py-3 bg-surface-container-low border-2 border-transparent focus-within:border-[#3980f4] rounded-xl cursor-pointer hover:bg-surface-container-high transition-all">
+                  <input type="radio" name="q_count" value="10" class="hidden">
+                  <span class="font-bold text-on-surface lg-text-lg">10 題</span>
+              </label>
+          </div>
+          <button onclick="window.startQuizGeneration()" class="signature-gradient text-white px-10 py-4 rounded-full font-bold text-lg shadow-xl active:scale-95 transition-all w-full max-w-sm flex items-center justify-center gap-2">
+              開始生成 <span class="material-symbols-outlined">magic_button</span>
+          </button>
+      </section>
+    `;
+
+      // Binding styles swapping for radio group
+      const labels = container.querySelectorAll('label');
+      labels.forEach(label => {
+        const input = label.querySelector('input');
+        input.addEventListener('change', () => {
+          labels.forEach(l => {
+            l.className = "flex-1 text-center py-3 bg-surface-container-low border-2 border-transparent focus-within:border-[#3980f4] rounded-xl cursor-pointer hover:bg-surface-container-high transition-all";
+            l.querySelector('span').className = "font-bold text-on-surface lg-text-lg";
+          });
+          label.className = "flex-1 text-center py-3 bg-[#eef0ff] border-2 border-[#3980f4] rounded-xl cursor-pointer transition-all shadow-sm";
+          label.querySelector('span').className = "font-bold text-[#3980f4] lg-text-lg";
+        });
+      });
+    });
+
+    window.startQuizGeneration = function () {
+      const selected = document.querySelector('input[name="q_count"]:checked');
+      if (selected) {
+        loadQuiz(selected.value);
+      }
+    };
+  </script>
+
+  <!-- Mobile Navigation Backdrop -->
+  <div id="mobile-menu-backdrop" onclick="window.closeMobileMenu()"
+    class="fixed inset-0 bg-black/50 z-[55] hidden opacity-0 transition-opacity duration-300"></div>
+
+  <!-- Mobile Navigation Sidebar -->
+  <aside id="mobile-menu"
+    class="fixed top-0 left-0 h-full w-72 bg-[#faf8ff] z-[60] transform -translate-x-full transition-transform duration-300 shadow-[24px_0_48px_rgba(19,27,46,0.1)] flex flex-col">
+    <div class="p-6 flex justify-between items-center border-b border-[#3980f4]/10">
+      <span
+        class="text-xl font-black bg-gradient-to-br from-[#3980f4] to-[#9466ff] bg-clip-text text-transparent">導覽選單</span>
+      <button onclick="window.closeMobileMenu()"
+        class="p-2 hover:bg-[#f2f3ff] rounded-full transition-colors text-[#131b2e]">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto py-4 flex flex-col gap-2 px-4">
+      <a href="/"
+        class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+        <span class="material-symbols-outlined text-[#3980f4]">home</span>
+        系統首頁 (輸入網址)
+      </a>
+      <a href="teaching.html"
+        class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+        <span class="material-symbols-outlined text-[#9466ff]">import_contacts</span>
+        知識教學卡片
+      </a>
+      <a href="quiz.html"
+        class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+        <span class="material-symbols-outlined text-[#f439a3]">quiz</span>
+        AI 深度測驗
+      </a>
+      <a href="history.html"
+        class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+        <span class="material-symbols-outlined text-tertiary">insert_chart</span>
+        歷史紀錄統計
+      </a>
+    </div>
+    <div class="p-6 border-t border-[#3980f4]/10 text-xs text-[#131b2e]/60 text-center font-bold">
+      The Digital Archivist © 2024
+    </div>
+  </aside>
+
+  <script>
+    window.openMobileMenu = function () {
+      const backdrop = document.getElementById('mobile-menu-backdrop');
+      const menu = document.getElementById('mobile-menu');
+      backdrop.classList.remove('hidden');
+      void backdrop.offsetWidth;
+      backdrop.classList.remove('opacity-0');
+      backdrop.classList.add('opacity-100');
+      menu.classList.remove('-translate-x-full');
+      menu.classList.add('translate-x-0');
+    }
+    window.closeMobileMenu = function () {
+      const backdrop = document.getElementById('mobile-menu-backdrop');
+      const menu = document.getElementById('mobile-menu');
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+      menu.classList.remove('translate-x-0');
+      menu.classList.add('-translate-x-full');
+      setTimeout(() => backdrop.classList.add('hidden'), 300);
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cacheBuster = "?v=" + new Date().getTime();
+      document.querySelectorAll('a').forEach(a => {
+        let href = a.getAttribute('href');
+        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.includes('?v=')) {
+          a.setAttribute('href', href.split('?')[0] + cacheBuster);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

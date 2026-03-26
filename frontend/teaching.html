@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-Hant">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#586377",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f2f3ff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#d8e3fb",
+                        "error": "#ba1a1a",
+                        "secondary": "#545f73",
+                        "outline": "#76777d",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-primary-container": "#3980f4",
+                        "inverse-primary": "#adc6ff",
+                        "surface": "#faf8ff",
+                        "secondary-container": "#d5e0f8",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#000000",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#001a42",
+                        "inverse-on-surface": "#eef0ff",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "surface-container-highest": "#dae2fd",
+                        "outline-variant": "#c6c6cd",
+                        "on-surface-variant": "#45464d",
+                        "on-primary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-tertiary-container": "#9466ff",
+                        "surface-tint": "#005ac2",
+                        "tertiary-container": "#23005c",
+                        "tertiary-fixed": "#e9ddff",
+                        "surface-container": "#eaedff",
+                        "on-secondary-fixed": "#111c2d",
+                        "surface-container-high": "#e2e7ff",
+                        "inverse-surface": "#283044",
+                        "primary-container": "#001a42",
+                        "on-surface": "#131b2e",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-variant": "#dae2fd",
+                        "primary-fixed": "#d8e2ff",
+                        "on-background": "#131b2e",
+                        "surface-dim": "#d2d9f4",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "primary": "#000000",
+                        "background": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "on-tertiary-fixed": "#23005c"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #3980f4 0%, #9466ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-btn {
+            background: linear-gradient(135deg, #3980f4 0%, #9466ff 100%);
+        }
+
+        .glass-header {
+            background: rgba(250, 248, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface min-h-screen pb-32">
+    <!-- TopAppBar Section -->
+    <header class="fixed top-0 w-full z-50 glass-header shadow-[0px_12px_32px_rgba(19,27,46,0.04)]">
+        <div class="flex items-center justify-between px-6 h-16 w-full max-w-7xl mx-auto">
+            <div class="flex items-center gap-3">
+                <button onclick="window.openMobileMenu()"
+                    class="p-2 -ml-2 mr-1 hover:bg-surface-container-high rounded-lg transition-colors text-[#3980f4] active:scale-95">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <span class="material-symbols-outlined text-[#3980f4]" data-icon="verified_user">verified_user</span>
+                <span
+                    class="text-xl font-extrabold bg-gradient-to-br from-[#3980f4] to-[#9466ff] bg-clip-text text-transparent font-['Manrope'] tracking-tight">知識驗證</span>
+                <span class="hidden md:flex items-center gap-1 ml-4 text-sm font-bold text-[#9466ff]">
+                    <span class="material-symbols-outlined text-[18px] text-[#9466ff]">import_contacts</span>
+                    <span>知識教學卡片</span>
+                </span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="login-btn" onclick="handleLogout()"
+                    class="text-sm font-bold text-[#3980f4] hover:opacity-100 hover:scale-105 transition-all duration-300 active:scale-95 hidden md:block"></button>
+                <button onclick="window.location.href='/?v=' + new Date().getTime()"
+                    class="text-sm font-bold text-[#3980f4] hover:opacity-100 hover:scale-105 transition-all duration-300 active:scale-95 flex items-center gap-1">
+                    <span class="font-label">返回首頁</span>
+                    <span class="material-symbols-outlined text-[18px]" data-icon="home">home</span>
+                </button>
+            </div>
+        </div>
+        <div class="bg-slate-200/15 h-[1px] w-full absolute bottom-0"></div>
+    </header>
+    <main class="pt-24 px-6 max-w-5xl mx-auto">
+        <!-- Hero Section Asymmetric Layout -->
+        <section class="mb-16">
+            <div>
+                <div class="text-center">
+                    <h2 class="font-headline text-4xl md:text-5xl font-extrabold tracking-tighter mb-6 leading-tight">
+                        <span class="gradient-text">掌握核心關鍵</span>
+                    </h2>
+                    <p class="text-secondary text-lg leading-relaxed max-w-xl mx-auto">
+                        透過數位化典藏技術，將冗長的學術報告與技術文檔，濃縮為易於吸收的知識精華。這是一個為高效率學習者量身打造的視覺化路徑。
+                    </p>
+                </div>
+            </div>
+            </div>
+        </section>
+        <!-- Knowledge Cards Bento Grid -->
+        <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Card 1: 核心架構 -->
+            <div
+                class="bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0px_12px_32px_rgba(19,27,46,0.06)] border border-outline-variant/10 flex flex-col hover:translate-y-[-4px] transition-transform duration-300">
+                <div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-on-primary-container text-2xl"
+                        data-icon="account_tree">account_tree</span>
+                </div>
+                <h3 class="font-headline text-xl font-bold mb-4">核心架構</h3>
+                <ul class="space-y-4 flex-grow">
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-primary-container text-sm mt-1"
+                            data-icon="check_circle">check_circle</span>
+                        <span class="text-secondary text-sm leading-relaxed">深度學習基礎模型的演進歷程與轉折點</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-primary-container text-sm mt-1"
+                            data-icon="check_circle">check_circle</span>
+                        <span class="text-secondary text-sm leading-relaxed">多層神經網路的數據流動與權重分配機制</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-primary-container text-sm mt-1"
+                            data-icon="check_circle">check_circle</span>
+                        <span class="text-secondary text-sm leading-relaxed">端對端學習流程的模組化拆解與分析</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- Card 2: 計算效率 -->
+            <div
+                class="bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0px_12px_32px_rgba(19,27,46,0.06)] border border-outline-variant/10 flex flex-col hover:translate-y-[-4px] transition-transform duration-300">
+                <div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-on-secondary-container text-2xl"
+                        data-icon="speed">speed</span>
+                </div>
+                <h3 class="font-headline text-xl font-bold mb-4">計算效率</h3>
+                <ul class="space-y-4 flex-grow">
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-secondary-container text-sm mt-1"
+                            data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="text-secondary text-sm leading-relaxed">優化訓練流程以降低硬體資源損耗</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-secondary-container text-sm mt-1"
+                            data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="text-secondary text-sm leading-relaxed">平行運算技術在大型數據集上的應用實踐</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-secondary-container text-sm mt-1"
+                            data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span class="text-secondary text-sm leading-relaxed">演算法剪枝與量化技術的最新效能對比</span>
+                    </li>
+                </ul>
+            </div>
+            <!-- Card 3: 未來展望 -->
+            <div
+                class="bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0px_12px_32px_rgba(19,27,46,0.06)] border border-outline-variant/10 flex flex-col hover:translate-y-[-4px] transition-transform duration-300 lg:col-span-1 md:col-span-2 lg:col-start-3">
+                <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-on-tertiary-fixed-variant text-2xl"
+                        data-icon="auto_awesome">auto_awesome</span>
+                </div>
+                <h3 class="font-headline text-xl font-bold mb-4">未來展望</h3>
+                <ul class="space-y-4 flex-grow">
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-tertiary-fixed-variant text-sm mt-1"
+                            data-icon="rocket_launch">rocket_launch</span>
+                        <span class="text-secondary text-sm leading-relaxed">人工智慧對勞動力市場與社會結構的影響</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-tertiary-fixed-variant text-sm mt-1"
+                            data-icon="rocket_launch">rocket_launch</span>
+                        <span class="text-secondary text-sm leading-relaxed">倫理框架在自動化決策系統中的關鍵地位</span>
+                    </li>
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined text-on-tertiary-fixed-variant text-sm mt-1"
+                            data-icon="rocket_launch">rocket_launch</span>
+                        <span class="text-secondary text-sm leading-relaxed">跨領域整合技術將如何重塑人類認知邊界</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- Footer Call to Action -->
+        <div class="mt-20 flex flex-col items-center">
+            <button onclick="window.location.href='quiz.html?v=' + new Date().getTime()"
+                class="gradient-btn text-on-primary px-10 py-5 rounded-full font-bold text-lg shadow-xl active:scale-95 transition-all duration-200 flex items-center gap-3">
+                前往測驗
+                <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+            </button>
+        </div>
+    </main>
+
+    <script>
+        let teachingDataGlobal = [];
+        async function loadTeachingContent() {
+            const container = document.getElementById('cards-container');
+            if (sessionStorage.getItem('hasSubmittedUrl') !== 'true') {
+                showErrorState(container, '您尚未輸入學習網址，請先提供網頁連結交由 AI 分析。');
+                return;
+            }
+            container.innerHTML = '<div class="col-span-full text-center py-20 text-on-surface-variant animate-pulse font-medium">✨ 正在驅動 RAG 模組為您動態萃取核心知識，這可能會加上對照原文，需要三十秒左右請耐心稍候...</div>';
+            try {
+                const res = await fetch('/api/teaching_content');
+                const data = await res.json();
+                if (res.ok && data.status === 'success') {
+                    const cards = JSON.parse(data.data);
+                    teachingDataGlobal = cards;
+                    container.innerHTML = '';
+                    const icons = ['account_tree', 'speed', 'auto_awesome', 'lightbulb', 'school'];
+                    const iconColors = ['bg-primary-container text-[#3980f4]', 'bg-secondary-container text-on-secondary-container', 'bg-tertiary-fixed text-on-tertiary-fixed-variant', 'bg-error-container text-[#ba1a1a]', 'bg-surface-variant text-on-surface-variant'];
+                    const listIcons = ['check_circle', 'star', 'rocket_launch', 'bolt', 'bookmark'];
+
+                    cards.forEach((c, idx) => {
+                        const iconClasses = iconColors[idx % iconColors.length];
+                        const listIcon = listIcons[idx % listIcons.length];
+                        const rawClass0 = iconClasses.split(' ')[0];
+                        const rawClass1 = iconClasses.split(' ')[1];
+                        const iconName = icons[idx % icons.length];
+                        container.innerHTML += `
+            <div onclick="openModal(${idx}, '${rawClass0}', '${rawClass1}', '${iconName}')" class="bg-surface-container-lowest p-8 rounded-[1.5rem] shadow-[0px_12px_32px_rgba(19,27,46,0.06)] border border-outline-variant/10 flex flex-col hover:translate-y-[-4px] transition-transform duration-300 cursor-pointer relative group">
+                <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-[#3980f4] bg-[#f2f3ff] p-2 rounded-full flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-[16px]">open_in_full</span>
+                </div>
+                <div class="w-12 h-12 rounded-xl ${rawClass0} flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined ${rawClass1} text-2xl">${iconName}</span>
+                </div>
+                <h3 class="font-headline text-xl font-bold mb-4 pr-8">${c.title}</h3>
+                <ul class="space-y-4 flex-grow">
+                    <li class="flex gap-3">
+                        <span class="material-symbols-outlined ${rawClass1} text-sm mt-1">${listIcon}</span>
+                        <span class="text-secondary text-sm leading-relaxed">${c.description}</span>
+                    </li>
+                </ul>
+            </div>
+          `;
+                    });
+                } else {
+                    showErrorState(container, data.detail || data.message);
+                }
+            } catch (err) {
+                showErrorState(container, err.message || err);
+            }
+        }
+
+        function showErrorState(container, msg) {
+            console.error("API 載入錯誤:", msg);
+            container.innerHTML = `
+        <div class="col-span-full p-12 bg-white rounded-3xl shadow-xl shadow-error/5 border border-[#3980f4]/10 text-center flex flex-col items-center">
+            <span class="material-symbols-outlined text-[#3980f4] mb-4" style="font-size: 48px;">link_off</span>
+            <h3 class="text-2xl font-bold text-on-surface mb-2 font-headline">無法取得您的教學內容</h3>
+            <p class="text-on-surface-variant mb-6 max-w-lg leading-relaxed">可能是因為您尚未提供學習網址，或是短時間內 AI 分析次數已達上限。</p>
+            <div class="w-full max-w-lg bg-surface-container-low p-2 rounded-2xl flex relative border-2 border-transparent focus-within:border-[#3980f4] transition-all">
+                <div class="pl-4 flex items-center justify-center text-on-surface-variant shrink-0">
+                    <span class="material-symbols-outlined text-xl">link</span>
+                </div>
+                <input id="error-url-input" type="url" placeholder="請貼上想要學習的網頁連結..." class="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 px-4 py-3 text-on-surface placeholder:text-on-surface-variant font-medium rounded-r-xl">
+                <button onclick="window.retryUrl(event)" class="absolute right-2 top-2 bottom-2 bg-gradient-to-r from-[#3980f4] to-[#9466ff] text-white px-6 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all hidden md:block">開始分析</button>
+            </div>
+            <button onclick="window.retryUrl(event)" class="w-full max-w-lg mt-4 bg-gradient-to-r from-[#3980f4] to-[#9466ff] text-white px-6 py-4 rounded-xl font-bold hover:scale-105 active:scale-95 transition-all md:hidden">開始分析</button>
+        </div>
+      `;
+        }
+
+        window.retryUrl = async function (event) {
+            const url = document.getElementById('error-url-input').value;
+            if (!url) return alert('請先貼上網址！');
+
+            const btn = event.target || event.srcElement;
+            const oldText = btn.innerText;
+            btn.innerText = '正在餵食 AI...';
+
+            try {
+                const res = await fetch('/api/process_url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (res.ok && data.status === 'success') {
+                    sessionStorage.setItem('hasSubmittedUrl', 'true');
+                    window.location.reload();
+                } else {
+                    alert('準備失敗: ' + (data.detail || data.message));
+                    btn.innerText = oldText;
+                }
+            } catch (e) {
+                alert('發生錯誤: ' + e);
+                btn.innerText = oldText;
+            }
+        }
+
+        function setLoginBtn(email) {
+            const btn = document.getElementById('login-btn');
+            if (!btn) return;
+            if (email) {
+                btn.innerText = email.split('@')[0];
+                btn.onclick = handleLogout;
+                btn.classList.remove('hidden');
+            } else {
+                btn.innerText = 'Sign In';
+                btn.onclick = handleLogin;
+                btn.classList.remove('hidden');
+            }
+        }
+
+        function handleLogin() {
+            const gmailRegex = /^[a-zA-Z0-9._%+\-]+@gmail\.com$/i;
+            const email = prompt('請輸入您的 Gmail 以記錄學習歷程：');
+            if (email && gmailRegex.test(email)) {
+                localStorage.setItem('userEmail', email);
+                setLoginBtn(email);
+                alert('登入成功！接下來的學習與測驗將綁定於此信箱。');
+            } else if (email) {
+                alert('格式不正確！請輸入有效的 Gmail 地址（例如：yourname@gmail.com）');
+            }
+        }
+
+        function handleLogout() {
+            const existing = localStorage.getItem('userEmail');
+            if (existing) {
+                if (confirm(`目前登入為：${existing}\n要登出嗎？`)) {
+                    localStorage.removeItem('userEmail');
+                    setLoginBtn(null);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 顯示登入名稱
+            setLoginBtn(localStorage.getItem('userEmail'));
+
+            // 開始載入內容
+            loadTeachingContent();
+        });
+    </script>
+    <!-- Teaching Detail Modal -->
+    <div id="details-modal"
+        class="fixed inset-0 bg-[#131b2e]/60 z-[100] hidden items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity duration-300"
+        onclick="if(event.target === this) closeModal()">
+        <div class="bg-surface-container-lowest w-full max-w-2xl max-h-[85vh] rounded-[2rem] shadow-2xl flex flex-col transform scale-95 transition-transform duration-300 relative"
+            id="details-modal-content">
+            <div class="p-6 md:p-8 flex justify-between items-start border-b border-outline-variant/15">
+                <div class="flex items-center gap-4">
+                    <div id="modal-icon-bg" class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                        <span id="modal-icon" class="material-symbols-outlined text-2xl"></span>
+                    </div>
+                    <h2 id="modal-title" class="font-headline text-2xl font-bold text-on-surface leading-tight pr-4">
+                    </h2>
+                </div>
+                <button onclick="closeModal()"
+                    class="p-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant bg-surface shrink-0">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="p-6 md:p-8 overflow-y-auto flex-1 font-body" style="scrollbar-width: thin; overflow-x: hidden;">
+                <div class="mb-8 pl-1">
+                    <h4 class="text-sm font-bold text-[#9466ff] uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">lightbulb</span> 深度解析
+                    </h4>
+                    <p id="modal-details" class="text-on-surface-variant text-[1.05rem] leading-relaxed"></p>
+                </div>
+                <div class="bg-[#f2f3ff] rounded-2xl p-6 md:p-8 border border-[#3980f4]/10 relative mt-4">
+                    <span class="material-symbols-outlined text-[#3980f4]/10 absolute -top-4 -left-2 text-6xl"
+                        data-icon="format_quote" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                    <div class="relative z-10 pl-2">
+                        <h4
+                            class="text-xs font-bold text-[#3980f4] uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">manage_search</span>
+                            原文出處佐證
+                        </h4>
+                        <p id="modal-quote"
+                            class="text-on-surface text-[0.95rem] italic leading-relaxed pl-4 border-l-[4px] border-[#3980f4]/40">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.openModal = function (idx, bgClass, colorClass, iconName) {
+            const item = teachingDataGlobal[idx];
+            if (!item) return;
+
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-details').innerText = item.details || item.description;
+            document.getElementById('modal-quote').innerText = item.source_quote || '未能成功抓取對應的原文段落。';
+
+            document.getElementById('modal-icon-bg').className = `w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${bgClass}`;
+            document.getElementById('modal-icon').className = `material-symbols-outlined text-2xl ${colorClass}`;
+            document.getElementById('modal-icon').innerText = iconName;
+
+            const modal = document.getElementById('details-modal');
+            const content = document.getElementById('details-modal-content');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // trigger reflow
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closeModal = function () {
+            const modal = document.getElementById('details-modal');
+            const content = document.getElementById('details-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+
+    <!-- Mobile Navigation Backdrop -->
+    <div id="mobile-menu-backdrop" onclick="window.closeMobileMenu()"
+        class="fixed inset-0 bg-black/50 z-[55] hidden opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Mobile Navigation Sidebar -->
+    <aside id="mobile-menu"
+        class="fixed top-0 left-0 h-full w-72 bg-[#faf8ff] z-[60] transform -translate-x-full transition-transform duration-300 shadow-[24px_0_48px_rgba(19,27,46,0.1)] flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-[#3980f4]/10">
+            <span
+                class="text-xl font-black bg-gradient-to-br from-[#3980f4] to-[#9466ff] bg-clip-text text-transparent">導覽選單</span>
+            <button onclick="window.closeMobileMenu()"
+                class="p-2 hover:bg-[#f2f3ff] rounded-full transition-colors text-[#131b2e]">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4 flex flex-col gap-2 px-4">
+            <a href="/"
+                class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-[#3980f4]">home</span>
+                系統首頁
+            </a>
+            <a href="teaching.html"
+                class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-[#9466ff]">import_contacts</span>
+                知識教學卡片
+            </a>
+            <a href="quiz.html"
+                class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-[#f439a3]">quiz</span>
+                AI 深度測驗
+            </a>
+            <a href="history.html"
+                class="flex items-center gap-4 px-4 py-4 rounded-xl font-bold font-headline text-[#131b2e] hover:bg-[#f2f3ff] transition-colors">
+                <span class="material-symbols-outlined text-tertiary">insert_chart</span>
+                歷史紀錄統計
+            </a>
+        </div>
+        <div class="p-6 border-t border-[#3980f4]/10 text-xs text-[#131b2e]/60 text-center font-bold">
+            The Digital Archivist © 2024
+        </div>
+    </aside>
+
+    <script>
+        window.openMobileMenu = function () {
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            const menu = document.getElementById('mobile-menu');
+            backdrop.classList.remove('hidden');
+            void backdrop.offsetWidth;
+            backdrop.classList.remove('opacity-0');
+            backdrop.classList.add('opacity-100');
+            menu.classList.remove('-translate-x-full');
+            menu.classList.add('translate-x-0');
+        }
+        window.closeMobileMenu = function () {
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            const menu = document.getElementById('mobile-menu');
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            menu.classList.remove('translate-x-0');
+            menu.classList.add('-translate-x-full');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cacheBuster = "?v=" + new Date().getTime();
+            document.querySelectorAll('a').forEach(a => {
+                let href = a.getAttribute('href');
+                if (href && !href.startsWith('http') && !href.startsWith('#') && !href.includes('?v=')) {
+                    a.setAttribute('href', href.split('?')[0] + cacheBuster);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

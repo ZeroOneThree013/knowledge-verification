@@ -1,0 +1,17 @@
+{
+  "configs": [
+    {
+      "type": "web",
+      "name": "knowledge-verification",
+      "env": {
+        "PORT": "8000"
+      },
+      "mounts": [
+        {
+          "path": "/app/vector_db",
+          "mountPath": "/app/vector_db"
+        }
+      ]
+    }
+  ]
+}
