@@ -19,6 +19,5 @@ COPY . .
 # 曝露埠號 (Render/Zeabur 會自動覆蓋)
 EXPOSE 8000
 
-# 啟動指令 (使用 Gunicorn 提高穩定性)
-# 注意：使用 uvicorn.workers.UvicornWorker 來處理 FastAPI
-CMD ["gunicorn", "app:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
+# 啟動指令 (使用 Gunicorn，並動態綁定 Render 分配的 PORT)
+CMD gunicorn app:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
