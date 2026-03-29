@@ -22,7 +22,7 @@
 | 後端 | Python · FastAPI · Gunicorn |
 | AI / RAG | LangChain · Google Gemini 2.5 Flash · ChromaDB |
 | 前端 | 原生 HTML / CSS / JavaScript |
-| 部署 | Docker · HuggingFace Spaces · Zeabur |
+| 部署 | Docker · HuggingFace Spaces |
 
 ---
 
