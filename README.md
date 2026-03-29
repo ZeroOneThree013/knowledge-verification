@@ -67,10 +67,6 @@ python app.py
    - `GMAIL_APP_PASSWORD`
 3. 將此 repo 推送至 Space
 
-### Zeabur
-
-`zeabur.json` 已預先設定，直接匯入專案即可部署。記得在 Zeabur 後台設定上述兩個環境變數。
-
 ---
 
 ## 專案結構
@@ -86,6 +82,5 @@ python app.py
 │   ├── quiz.html     # 測驗頁
 │   └── history.html  # 學習紀錄頁
 ├── Dockerfile        # 容器化設定（相容 HuggingFace Spaces）
-├── requirements.txt  # Python 依賴清單
-└── zeabur.json       # Zeabur 部署設定
+└── requirements.txt  # Python 依賴清單
 ```
