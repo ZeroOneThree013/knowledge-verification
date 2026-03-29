@@ -104,10 +104,9 @@ async def export_record(req: ExportRequest):
             md_content += f"> **💡 正確解答**: {ans}\n\n"
             
         # 嘗試使用 SMTP 寄信
-        # 由於使用者的原本伺服器無意間連續跑了 40 小時沒重開，無法吃到新的環境變數
-        # 所以我們直接將剛才拿到的 16 碼密碼綁定進來，並自動抓取使用者登入的信箱作為寄件帳號！
+        # 寄件帳號為使用者登入的信箱，密碼從環境變數 GMAIL_APP_PASSWORD 讀取
         sender_email = req.email
-        sender_password = "jjewudvcfjqhvzup"
+        sender_password = os.environ.get("GMAIL_APP_PASSWORD", "")
         email_sent = False
         smtp_error_msg = ""
         
