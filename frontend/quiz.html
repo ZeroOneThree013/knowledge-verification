@@ -204,6 +204,10 @@
 
       try {
         const res = await fetch(`/api/quiz?num=${num}`);
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+          throw new Error('伺服器目前無法回應（Space 可能正在重新啟動），請稍候幾秒後重新整理頁面再試。');
+        }
         const data = await res.json();
         if (res.ok && data.status === 'success') {
           quizData = JSON.parse(data.data);
@@ -489,6 +493,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, quiz_data: quizData, score, total })
         });
+        const ct = res.headers.get('content-type') || '';
+        if (!ct.includes('application/json')) {
+          throw new Error('伺服器目前無法回應（Space 可能正在重新啟動），請稍候幾秒後重新整理頁面再試。');
+        }
         const data = await res.json();
         if (res.ok && data.status === 'success') {
           alert(data.message);

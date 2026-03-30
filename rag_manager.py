@@ -34,12 +34,10 @@ class RAGManager:
         
         # 使用 Chroma 建立全新的本地知識庫
         self.db = Chroma.from_texts(
-            texts=chunks, 
+            texts=chunks,
             embedding=self.embeddings,
             persist_directory=self.persist_directory
         )
-        # 持久化儲存
-        self.db.persist()
         return len(chunks)
         
     def retrieve(self, query: str, k: int = 4) -> str:
