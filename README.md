@@ -1,3 +1,12 @@
+---
+title: Knowledge Verify
+emoji: 🚀
+colorFrom: gray
+colorTo: red
+sdk: docker
+pinned: false
+---
+
 # 知識驗證系統
 
 將任意網頁文章轉換為互動式學習材料——自動生成教學卡片與測驗題，並支援匯出學習紀錄。
