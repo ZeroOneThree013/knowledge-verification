@@ -4,8 +4,7 @@ emoji: 🚀
 colorFrom: gray
 colorTo: red
 sdk: docker
-pin
-ned: false
+pinned: false
 ---
 
 # 知識驗證系統
