@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, Response
 from pydantic import BaseModel
 from crawler import fetch_url_content
 import os
+import asyncio
 from dotenv import load_dotenv
 
 # 載入 .env 檔案中的環境變數
@@ -46,12 +47,12 @@ async def process_url(req: URLRequest):
     """
     try:
         # 第一步：網頁純文字抓取
-        text_content = fetch_url_content(req.url)
+        text_content = await asyncio.to_thread(fetch_url_content, req.url)
         if len(text_content) < 50:
              raise Exception("抓取到的內文過少，網站可能使用了動態渲染(SPA)防護或無有效文字。")
-             
+
         # 第二步：文字切塊與向量化存庫
-        chunk_count = rag_manager.process_and_store(text_content)
+        chunk_count = await asyncio.to_thread(rag_manager.process_and_store, text_content)
         
         return {
             "status": "success", 
@@ -67,10 +68,10 @@ async def get_teaching_content():
     """
     try:
         # 檢索廣泛的主題相關區塊
-        context = rag_manager.retrieve("這篇文章核心概念、重點與架構是什麼？", k=5)
-        
+        context = await asyncio.to_thread(rag_manager.retrieve, "這篇文章核心概念、重點與架構是什麼？", 5)
+
         # 叫用 LLM 以 JSON 格式輸出萃取結果
-        content_json_str = llm_service.extract_teaching_points(context)
+        content_json_str = await llm_service.extract_teaching_points(context)
         return {"status": "success", "data": content_json_str}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"生成教學內容失敗: {str(e)}")
@@ -82,9 +83,9 @@ async def get_quiz(num: int = 5):
     """
     try:
         # 檢索文章中的具體細節與知識點來出題
-        context = rag_manager.retrieve("文章中的具體細節、專有名詞解釋、以及需要思考的問題是什麼？", k=6)
-        
-        quiz_json_str = llm_service.generate_quiz(context, num_questions=num)
+        context = await asyncio.to_thread(rag_manager.retrieve, "文章中的具體細節、專有名詞解釋、以及需要思考的問題是什麼？", 6)
+
+        quiz_json_str = await llm_service.generate_quiz(context, num_questions=num)
         return {"status": "success", "data": quiz_json_str}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"測驗生成失敗: {str(e)}")

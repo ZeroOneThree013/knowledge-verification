@@ -9,7 +9,7 @@ class LLMService:
         # 使用 Gemini 模型進行生成，注意需要設定 GOOGLE_API_KEY
         self.llm = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash", temperature=0.7)
         
-    def extract_teaching_points(self, context: str) -> str:
+    async def extract_teaching_points(self, context: str) -> str:
         """從 RAG 檢索內容中萃取重點知識"""
         prompt = PromptTemplate.from_template(
             "你是一個專業的知識萃取助理。請根據以下文本內容，萃取出最重要的 3 到 5 個關鍵概念，"
@@ -21,10 +21,10 @@ class LLMService:
             "]"
         )
         chain = prompt | self.llm
-        response = chain.invoke({"context": context})
+        response = await chain.ainvoke({"context": context})
         return self._extract_json(response.content)
 
-    def generate_quiz(self, context: str, num_questions: int = 5) -> str:
+    async def generate_quiz(self, context: str, num_questions: int = 5) -> str:
         """根據文本生成指定題數的單選測驗題"""
         prompt = PromptTemplate.from_template(
             "你是一個專業的測驗出題老師。請根據以下文本內容，設計 {num} 題測驗題目，"
@@ -36,7 +36,7 @@ class LLMService:
             "]"
         )
         chain = prompt | self.llm
-        response = chain.invoke({"context": context, "num": num_questions})
+        response = await chain.ainvoke({"context": context, "num": num_questions})
         return self._extract_json(response.content)
         
     def _extract_json(self, text: str) -> str:
