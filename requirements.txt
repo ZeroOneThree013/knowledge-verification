@@ -5,6 +5,7 @@ requests
 beautifulsoup4
 langchain
 langchain-community
+langchain-chroma
 langchain-text-splitters
 langchain-google-genai
 chromadb

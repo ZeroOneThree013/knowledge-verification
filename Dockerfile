@@ -33,4 +33,4 @@ USER user
 EXPOSE 7860
 
 # 啟動指令 (使用 Gunicorn 並動態綁定 PORT)
-CMD gunicorn app:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
+CMD gunicorn app:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120
