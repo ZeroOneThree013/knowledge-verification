@@ -117,21 +117,23 @@ async def export_record(req: ExportRequest):
                 msg['Subject'] = "【The Digital Archivist】您的知識驗證學習紀錄"
                 msg['From'] = f"The Digital Archivist <{sender_email}>"
                 msg['To'] = req.email
-                
+
                 body = "您好！感謝您使用本系統進行學習，附件是您剛剛完成的學習紀錄與全數解答，請查收。"
                 msg.attach(MIMEText(body, 'plain', 'utf-8'))
-                
+
                 # 將 MD 內容作為附件
                 filename = f"learning_record_{req.email.split('@')[0]}.md"
                 part = MIMEApplication(md_content.encode('utf-8'))
                 part.add_header('Content-Disposition', 'attachment', filename=filename)
                 msg.attach(part)
-                
-                with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                    # 使用使用者的信箱與 16 碼應用程式密碼登入
-                    server.login(sender_email, sender_password)
-                    server.send_message(msg)
-                
+
+                def send_email():
+                    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                        # 使用使用者的信箱與 16 碼應用程式密碼登入
+                        server.login(sender_email, sender_password)
+                        server.send_message(msg)
+
+                await asyncio.to_thread(send_email)
                 email_sent = True
             except Exception as e:
                 smtp_error_msg = str(e)
