@@ -7,6 +7,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>知識測驗 - The Digital Archivist</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap"
     rel="stylesheet" />
@@ -476,45 +478,180 @@
           const exportBtn = document.createElement('button');
           exportBtn.id = 'export-btn';
           exportBtn.className = "mt-4 bg-[#e9ddff] text-[#23005c] px-12 py-5 rounded-full font-headline font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center gap-3";
-          exportBtn.innerHTML = `匯出成 MD 寄至信箱 <span class="material-symbols-outlined">mail</span>`;
-          exportBtn.onclick = () => exportRecord(score, quizData.length);
+          exportBtn.innerHTML = `下載學習歷程 <span class="material-symbols-outlined">download</span>`;
+          exportBtn.onclick = () => openExportModal(score, quizData.length);
           btn.parentNode.appendChild(exportBtn);
         }
       }
     }
 
-    async function exportRecord(score, total) {
-      const email = localStorage.getItem('userEmail');
+    let _exportScore = 0, _exportTotal = 0;
+
+    function openExportModal(score, total) {
+      _exportScore = score;
+      _exportTotal = total;
+      const modal = document.getElementById('export-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeExportModal() {
+      const modal = document.getElementById('export-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function doExport(format) {
+      closeExportModal();
       const exportBtn = document.getElementById('export-btn');
-      exportBtn.innerText = '生成並匯出中...';
+      if (exportBtn) {
+        exportBtn.innerHTML = '準備中... <span class="material-symbols-outlined">hourglass_empty</span>';
+        exportBtn.disabled = true;
+      }
       try {
+        const email = localStorage.getItem('userEmail') || '未登入';
+        const score = _exportScore;
+        const total = _exportTotal;
+        const questions = quizData.map((item, i) => {
+          const sel = document.querySelector(`input[name="q${i}"]:checked`);
+          return {
+            question: item.question,
+            options: item.options || [],
+            answer: item.answer,
+            userAnswer: sel ? sel.value : '（未作答）',
+            isCorrect: sel ? sel.value === item.answer : false
+          };
+        });
+
         const res = await fetch('/api/export_record', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, quiz_data: quizData, score, total })
         });
         const ct = res.headers.get('content-type') || '';
-        if (!ct.includes('application/json')) {
-          throw new Error('伺服器目前無法回應（Space 可能正在重新啟動），請稍候幾秒後重新整理頁面再試。');
-        }
+        if (!ct.includes('application/json')) throw new Error('伺服器目前無法回應，請稍後再試。');
         const data = await res.json();
-        if (res.ok && data.status === 'success') {
-          alert(data.message);
-          if (data.markdown) {
-            const blob = new Blob([data.markdown], { type: 'text/markdown' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `learning_record.md`;
-            a.click();
-          }
-        } else {
-          alert('匯出失敗: ' + (data.detail || data.message));
+        if (!res.ok || data.status !== 'success') throw new Error(data.detail || data.message || '匯出失敗');
+
+        const dateStr = new Date().toLocaleDateString('zh-TW').replace(/\//g, '-');
+        const filename = `學習歷程_${email.split('@')[0]}_${dateStr}`;
+
+        if (format === 'md') {
+          triggerDownload(new Blob([data.markdown], { type: 'text/markdown' }), filename + '.md');
+        } else if (format === 'csv') {
+          const csv = buildCSV(questions, score, total, email);
+          triggerDownload(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' }), filename + '.csv');
+        } else if (format === 'pdf') {
+          await buildPrintPDF(questions, score, total, email, filename + '.pdf');
+        } else if (format === 'word') {
+          const html = buildDocHTML(questions, score, total, email);
+          triggerDownload(new Blob([html], { type: 'application/msword' }), filename + '.doc');
         }
+
+        if (exportBtn) exportBtn.innerHTML = `已下載 <span class="material-symbols-outlined">check</span>`;
       } catch (err) {
-        alert('發生錯誤: ' + err);
+        alert('匯出失敗：' + err.message);
+        if (exportBtn) {
+          exportBtn.innerHTML = `下載學習歷程 <span class="material-symbols-outlined">download</span>`;
+          exportBtn.disabled = false;
+        }
+      }
+    }
+
+    function triggerDownload(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function buildCSV(questions, score, total, email) {
+      const lines = [
+        ['學習者', `"${email}"`, '', '', '', ''],
+        ['得分', `${score} / ${total}`, '', '', '', ''],
+        ['日期', `"${new Date().toLocaleString('zh-TW')}"`, '', '', '', ''],
+        [],
+        ['題號', '題目', '選項', '正確答案', '作答', '是否正確'],
+        ...questions.map((q, i) => [
+          i + 1,
+          `"${q.question.replace(/"/g, '""')}"`,
+          `"${q.options.join(' / ').replace(/"/g, '""')}"`,
+          `"${q.answer.replace(/"/g, '""')}"`,
+          `"${q.userAnswer.replace(/"/g, '""')}"`,
+          q.isCorrect ? '✓' : '✗'
+        ])
+      ];
+      return lines.map(r => r.join(',')).join('\n');
+    }
+
+    function buildDocHTML(questions, score, total, email) {
+      const rows = questions.map((q, i) => `
+        <tr><td style="padding:10px 12px;border:1px solid #ddd;font-weight:bold;background:#f5f7ff">
+          ${i + 1}. ${q.question}</td></tr>
+        <tr><td style="padding:6px 12px;border:1px solid #ddd;color:#555;font-size:13px">
+          選項：${q.options.join('　　')}</td></tr>
+        <tr><td style="padding:6px 12px;border:1px solid #ddd;color:#1a5fa8">
+          ✅ 正確答案：${q.answer}</td></tr>
+        <tr><td style="padding:6px 12px;border:1px solid #ddd;color:${q.isCorrect ? '#2a7a2a' : '#c00000'}">
+          ${q.isCorrect ? '✓ 答對' : '✗ 答錯'}　您的作答：${q.userAnswer}</td></tr>
+        <tr><td style="padding:6px"></td></tr>
+      `).join('');
+      return `<html><head><meta charset="utf-8">
+        <style>
+          body { font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif; margin: 30px; color: #111; }
+          h1 { color: #3980f4; font-size: 22px; }
+          .meta { color: #555; font-size: 14px; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; }
+        </style></head><body>
+        <h1>🎓 知識驗證學習歷程</h1>
+        <p class="meta">學習者：${email}　　得分：${score} / ${total}　　日期：${new Date().toLocaleString('zh-TW')}</p>
+        <hr>
+        <table>${rows}</table>
+        </body></html>`;
+    }
+
+    async function buildPrintPDF(questions, score, total, email, filename) {
+      const rows = questions.map((q, i) => `
+        <div style="margin-bottom:14px;border:1px solid #ddd;border-radius:8px;overflow:hidden">
+          <div style="padding:10px 14px;font-weight:bold;background:#f5f7ff">${i + 1}. ${q.question}</div>
+          <div style="padding:6px 14px;color:#555;font-size:13px">選項：${q.options.join('　　')}</div>
+          <div style="padding:6px 14px;color:#1a5fa8">✅ 正確答案：${q.answer}</div>
+          <div style="padding:6px 14px;color:${q.isCorrect ? '#2a7a2a' : '#c00000'}">
+            ${q.isCorrect ? '✓ 答對' : '✗ 答錯'}　您的作答：${q.userAnswer}</div>
+        </div>`).join('');
+
+      const container = document.createElement('div');
+      container.style.cssText = 'position:fixed;left:-9999px;top:0;width:680px;padding:40px;background:white;font-family:"Microsoft JhengHei","Noto Sans TC",Arial,sans-serif;color:#111;';
+      container.innerHTML = `
+        <h1 style="color:#3980f4;font-size:22px;margin-bottom:8px">🎓 知識驗證學習歷程</h1>
+        <p style="color:#555;font-size:14px;margin-bottom:16px">學習者：${email}　　得分：${score} / ${total}　　日期：${new Date().toLocaleString('zh-TW')}</p>
+        <hr style="margin-bottom:16px">${rows}`;
+      document.body.appendChild(container);
+
+      try {
+        const canvas = await html2canvas(container, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const margin = 10, pageW = 210, pageH = 297;
+        const contentW = pageW - margin * 2;
+        const sliceHeightPX = ((pageH - margin * 2) / contentW) * canvas.width;
+
+        let srcY = 0, first = true;
+        while (srcY < canvas.height) {
+          if (!first) doc.addPage();
+          first = false;
+          const slicePX = Math.min(sliceHeightPX, canvas.height - srcY);
+          const sliceMM = (slicePX / canvas.width) * contentW;
+          const slice = document.createElement('canvas');
+          slice.width = canvas.width;
+          slice.height = slicePX;
+          slice.getContext('2d').drawImage(canvas, 0, srcY, canvas.width, slicePX, 0, 0, canvas.width, slicePX);
+          doc.addImage(slice.toDataURL('image/png'), 'PNG', margin, margin, contentW, sliceMM);
+          srcY += slicePX;
+        }
+        doc.save(filename);
       } finally {
-        exportBtn.innerHTML = `已嘗試匯出 <span class="material-symbols-outlined">check</span>`;
+        document.body.removeChild(container);
       }
     }
 
@@ -618,6 +755,42 @@
       }
     };
   </script>
+
+  <!-- Export Format Modal -->
+  <div id="export-modal" class="fixed inset-0 z-[90] hidden items-end md:items-center justify-center">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeExportModal()"></div>
+    <div class="relative w-full max-w-md bg-[#faf8ff] rounded-t-3xl md:rounded-3xl shadow-2xl p-8 pb-10 mx-0 md:mx-4">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold font-headline text-on-surface">選擇匯出格式</h3>
+        <button onclick="closeExportModal()" class="p-2 rounded-full hover:bg-surface-container-high transition-all">
+          <span class="material-symbols-outlined text-on-surface-variant">close</span>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <button onclick="doExport('md')" class="flex flex-col items-center gap-2 p-6 bg-[#e9ddff] hover:bg-[#d0bcff] rounded-2xl transition-all active:scale-95">
+          <span class="material-symbols-outlined text-4xl text-[#23005c]">description</span>
+          <span class="font-bold text-[#23005c] font-headline">Markdown</span>
+          <span class="text-xs text-[#23005c]/60">.md</span>
+        </button>
+        <button onclick="doExport('csv')" class="flex flex-col items-center gap-2 p-6 bg-[#d8e2ff] hover:bg-[#adc6ff] rounded-2xl transition-all active:scale-95">
+          <span class="material-symbols-outlined text-4xl text-[#001a42]">table_chart</span>
+          <span class="font-bold text-[#001a42] font-headline">CSV 試算表</span>
+          <span class="text-xs text-[#001a42]/60">.csv</span>
+        </button>
+        <button onclick="doExport('pdf')" class="flex flex-col items-center gap-2 p-6 bg-[#ffdad6] hover:bg-[#ffb4ab] rounded-2xl transition-all active:scale-95">
+          <span class="material-symbols-outlined text-4xl text-[#93000a]">picture_as_pdf</span>
+          <span class="font-bold text-[#93000a] font-headline">PDF</span>
+          <span class="text-xs text-[#93000a]/60">瀏覽器列印存檔</span>
+        </button>
+        <button onclick="doExport('word')" class="flex flex-col items-center gap-2 p-6 bg-[#d8e3fb] hover:bg-[#bcc7de] rounded-2xl transition-all active:scale-95">
+          <span class="material-symbols-outlined text-4xl text-[#3c475a]">article</span>
+          <span class="font-bold text-[#3c475a] font-headline">Word</span>
+          <span class="text-xs text-[#3c475a]/60">.doc</span>
+        </button>
+      </div>
+      <p class="text-xs text-on-surface-variant text-center mt-5">選擇格式後將立即開始下載</p>
+    </div>
+  </div>
 
   <!-- Mobile Navigation Backdrop -->
   <div id="mobile-menu-backdrop" onclick="window.closeMobileMenu()"

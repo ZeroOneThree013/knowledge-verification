@@ -10,10 +10,6 @@ from dotenv import load_dotenv
 
 # 載入 .env 檔案中的環境變數
 load_dotenv()
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.application import MIMEApplication
 from rag_manager import RAGManager
 from llm_service import LLMService
 
@@ -92,65 +88,23 @@ async def get_quiz(num: int = 5):
 
 @app.post("/api/export_record")
 async def export_record(req: ExportRequest):
-    """將學習紀錄匯出成 MD，並寄送 Email (若無 SMTP 設定則回傳給前端下載)"""
+    """將學習紀錄匯出成 MD，回傳給前端下載"""
     try:
         md_content = f"# 🎓 知識驗證學習紀錄\n\n"
         md_content += f"- **學習者帳號**: {req.email}\n"
         md_content += f"- **精熟度測驗得分**: {req.score} / {req.total}\n\n"
         md_content += "---\n\n## 📝 題目與解答回顧\n\n"
-        
+
         for i, q in enumerate(req.quiz_data):
             md_content += f"### Q{i+1}: {q.get('question')}\n\n"
             ans = q.get('answer', '')
             md_content += f"> **💡 正確解答**: {ans}\n\n"
-            
-        # 嘗試使用 SMTP 寄信
-        # 寄件帳號為使用者登入的信箱，密碼從環境變數 GMAIL_APP_PASSWORD 讀取
-        sender_email = req.email
-        sender_password = os.environ.get("GMAIL_APP_PASSWORD", "")
-        email_sent = False
-        smtp_error_msg = ""
-        
-        if sender_email and sender_password:
-            try:
-                msg = MIMEMultipart()
-                msg['Subject'] = "【The Digital Archivist】您的知識驗證學習紀錄"
-                msg['From'] = f"The Digital Archivist <{sender_email}>"
-                msg['To'] = req.email
 
-                body = "您好！感謝您使用本系統進行學習，附件是您剛剛完成的學習紀錄與全數解答，請查收。"
-                msg.attach(MIMEText(body, 'plain', 'utf-8'))
-
-                # 將 MD 內容作為附件
-                filename = f"learning_record_{req.email.split('@')[0]}.md"
-                part = MIMEApplication(md_content.encode('utf-8'))
-                part.add_header('Content-Disposition', 'attachment', filename=filename)
-                msg.attach(part)
-
-                def send_email():
-                    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                        # 使用使用者的信箱與 16 碼應用程式密碼登入
-                        server.login(sender_email, sender_password)
-                        server.send_message(msg)
-
-                await asyncio.to_thread(send_email)
-                email_sent = True
-            except Exception as e:
-                smtp_error_msg = str(e)
-                print(f"寄信失敗: {e}")
-                
-        if email_sent:
-            return {
-                "status": "success", 
-                "message": f"大成功！🎉 這份學習紀錄已透過 Gmail 以您的名義成功寄達信箱：{req.email}",
-                "markdown": md_content # 保留備用下載機制
-            }
-        else:
-            return {
-                "status": "success", 
-                "message": f"雖然產生了 Markdown，但寄信失敗：可能是您前台 Sign In 登入的信箱與產生密碼的 Google 帳號不同！\n\nGmail 系統報錯：{smtp_error_msg}\n\n已啟動備取方案：直接透過瀏覽器下載檔案給您。",
-                "markdown": md_content
-            }
+        return {
+            "status": "success",
+            "message": "學習紀錄已產生，請點擊下載按鈕儲存檔案。",
+            "markdown": md_content,
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
